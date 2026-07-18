@@ -4,31 +4,27 @@ import { SacramentMeeting } from '@/lib/types';
 
 export const revalidate = 0;
 
-function findClosestMeeting(meetings: SacramentMeeting[]): SacramentMeeting | null {
+function findCurrentSundayMeeting(meetings: SacramentMeeting[]): SacramentMeeting | null {
   if (!meetings || meetings.length === 0) return null;
 
   const today = new Date();
+  const dayOfWeek = today.getDay();
+  const dateOfMonth = today.getDate();
+  const currentSunday = new Date(today);
   
-  today.setHours(0, 0, 0, 0); 
+  currentSunday.setDate(dateOfMonth - dayOfWeek);
+  const currentSundayStr = currentSunday.toISOString().split('T')[0];
 
-  return meetings.reduce((closest, current) => {
-    const currentDate = new Date(current.date);
-    const closestDate = new Date(closest.date);
-
-    const currentDiff = Math.abs(currentDate.getTime() - today.getTime());
-    const closestDiff = Math.abs(closestDate.getTime() - today.getTime());
-
-    return currentDiff < closestDiff ? current : closest;
-  });
+  return meetings.find(meeting => meeting.date === currentSundayStr) || null;
 }
 
 export default async function CurrentMeetingPage() {
   const meetings = getMeetings();
   
-  const currentMeeting = findClosestMeeting(meetings);
+  const currentMeeting = findCurrentSundayMeeting(meetings); 
 
   if (!currentMeeting) {
-    redirect('/meetings');
+    redirect('/meetings'); 
   }
 
   redirect(`/meetings/${currentMeeting.id}`);

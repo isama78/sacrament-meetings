@@ -1,4 +1,5 @@
 "use client";
+import { capitalize } from '@/app/helpers/helpers';
 import { SacramentMeeting } from '@/lib/types';
 
 interface MeetingDetailProps {
@@ -10,7 +11,7 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
     <article className="print-card max-w-3xl mx-auto bg-white p-8 border border-slate-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-slate-800">
       <div className="text-center border-b pb-6 mb-6 border-slate-200 dark:border-slate-700">
         <h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
-          Sacrament Meeting
+          Sacrament Meeting <span className="text-slate-600 dark:text-slate-400">{`(${capitalize(meeting.meetingType)})`}</span>
         </h2>
         <p className="text-slate-500 mt-1">{meeting.date}</p>
         <div className="flex justify-center gap-4 mt-2 text-sm text-slate-600 dark:text-slate-400">
