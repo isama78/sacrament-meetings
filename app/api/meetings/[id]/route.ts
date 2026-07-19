@@ -7,11 +7,12 @@ export async function GET(
 ) {
   const { id } = await params;
   const idNumber = parseInt(id, 10);
+
   if (isNaN(idNumber)) {
     return new NextResponse('Invalid ID. It must be a number.', { status: 400 });
   }
 
-  const meeting = getMeetingById(idNumber);
+  const meeting = await getMeetingById(idNumber);
 
   if (!meeting) {
     return new NextResponse('Meeting not found.', { status: 404 });

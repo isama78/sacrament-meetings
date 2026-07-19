@@ -9,17 +9,17 @@ function findCurrentSundayMeeting(meetings: SacramentMeeting[]): SacramentMeetin
 
   const today = new Date();
   const dayOfWeek = today.getDay();
+
   const dateOfMonth = today.getDate();
+
   const currentSunday = new Date(today);
-  
   currentSunday.setDate(dateOfMonth - dayOfWeek);
   const currentSundayStr = currentSunday.toISOString().split('T')[0];
-
   return meetings.find(meeting => meeting.date === currentSundayStr) || null;
 }
 
 export default async function CurrentMeetingPage() {
-  const meetings = getMeetings();
+  const meetings = await getMeetings();
   
   const currentMeeting = findCurrentSundayMeeting(meetings); 
 
