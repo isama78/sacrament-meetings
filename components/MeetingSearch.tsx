@@ -10,7 +10,7 @@ export function MeetingSearch() {
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set("page", "1"); // always reset to page 1 on a new search
+    params.set("page", "1");
     if (term) {
       params.set("query", term);
     } else {
