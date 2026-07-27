@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import EditMeetingForm from './edit-meeting-form';
-import { getMeetingById } from '@/lib/meetings-db'; // o tu query a la DB
+import { getMeetingById } from '@/lib/meetings-db';
 
 export default async function EditMeetingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
