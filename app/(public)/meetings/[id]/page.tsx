@@ -24,6 +24,6 @@ export default async function MeetingDetailPage({ params }: MeetingPageProps) {
   if (!meeting) {
     notFound();
   }
-
+  console.log("meeting", meeting)
   return <MeetingDetail meeting={meeting} />;
 }

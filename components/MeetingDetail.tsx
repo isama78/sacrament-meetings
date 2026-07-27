@@ -18,7 +18,7 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
   const closingPrayer = meeting.closingPrayer || meeting.closingPrayer;
   const meetingType = meeting.meetingType || meeting.meetingType;
   const stakeBusiness = meeting.stakeBusiness ?? meeting.stakeBusiness;
-
+  console.log("abre el detalle de agenda", meeting)
   return (
     <article className="print-card max-w-3xl mx-auto bg-white p-6 border border-slate-200 rounded-lg shadow-sm space-y-6 dark:bg-slate-900 dark:border-slate-800">
       <header className="border-b pb-4 border-slate-200 dark:border-slate-800 flex justify-between items-start">
