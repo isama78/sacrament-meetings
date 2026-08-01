@@ -7,6 +7,16 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { safeJsonParse } from "../app/helpers/helpers";
 import { SpeakerItem, WardBusinessItem } from "./types";
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
+import { auth } from '@/auth';
+import { signOut } from "@/auth";
+
+async function requireOwnerSession() {
+  const session = await auth();
+  if (!session?.user) throw new Error('Not authenticated');
+  return session;
+}
 
 const HymnSchema = z.object({
   number: z.coerce.number().min(1, "Hymn number must be valid."),
@@ -89,6 +99,7 @@ export async function createMeeting(
     .join(',')}}`;
 
   try {
+    await requireOwnerSession();
     await sql`
       INSERT INTO meetings (
         date,
@@ -130,7 +141,13 @@ export async function createMeeting(
 }
 
 export async function deleteMeeting(id: number) {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect('/login');
+  }
   try {
+    await requireOwnerSession();
     await sql`DELETE FROM meetings WHERE id = ${id}`;
     revalidatePath('/meetings');
   } catch (error) {
@@ -186,6 +203,7 @@ export async function updateMeeting(
   const postgresAnnouncements = `{${data.announcements.map((a) => `"${a.replace(/"/g, '\\"')}"`).join(',')}}`;
 
   try {
+    await requireOwnerSession();
     await sql`
       UPDATE meetings
       SET
@@ -211,4 +229,27 @@ export async function updateMeeting(
 
   revalidatePath('/meetings');
   redirect('/meetings');
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid email or password.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error; // re-throw so Next.js handles redirects correctly
+  }
+}
+
+export async function logout() {
+  await signOut({ redirectTo: '/' }); //[cite: 1]
 }

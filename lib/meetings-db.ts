@@ -99,6 +99,14 @@ export async function getMeetingById(
   return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
+export async function getUserByEmail(email: string) {
+  const rows = await sql`
+    SELECT * FROM users WHERE email = ${email}
+  `;
+
+  return rows[0] ?? null;
+}
+
 // Mutation stubs — will be wired to the database in Week 04
 // export async function addMeeting(
 //   data: Omit<SacramentMeeting, 'id'>
